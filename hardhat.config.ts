@@ -1,8 +1,8 @@
-import '@nomiclabs/hardhat-waffle'
 import '@nomiclabs/hardhat-etherscan'
 import '@nomiclabs/hardhat-ethers'
 import '@typechain/hardhat'
 import 'dotenv/config'
+import 'hardhat-celo'
 import 'hardhat-deploy'
 import 'hardhat-gas-reporter'
 import 'solidity-coverage'
@@ -11,9 +11,14 @@ import { CustomHardhatConfig } from './models/custom-hardhat-config.model'
 
 require('dotenv').config()
 
-const { COINMARKETCAP_API_KEY, POLYGONSCAN_API_KEY, PRIVATE_KEY } = process.env
+const {
+	CELOSCAN_API_KEY,
+	COINMARKETCAP_API_KEY,
+	POLYGONSCAN_API_KEY,
+	PRIVATE_KEY
+} = process.env
 
-const defaultNetwork = 'mumbai' // change the defaul network if you want to deploy onchain      0         bg
+const defaultNetwork = 'mumbai' // change the defaul network if you want to deploy onchain
 const config: CustomHardhatConfig = {
 	defaultNetwork,
 	networks: {
@@ -24,6 +29,13 @@ const config: CustomHardhatConfig = {
 		localhost: {
 			chainId: 1337,
 			allowUnlimitedContractSize: true
+		},
+		alfajores: {
+			chainId: 44787,
+			accounts: [PRIVATE_KEY || ''],
+			url: 'https://alfajores-forno.celo-testnet.org',
+			gas: 6000000, // Increase the gas limit
+			gasPrice: 10000000000 // Set a custom gas price (in Gwei, optional)
 		},
 		mumbai: {
 			chainId: 80001,
@@ -37,7 +49,10 @@ const config: CustomHardhatConfig = {
 		}
 	},
 	etherscan: {
-		apiKey: POLYGONSCAN_API_KEY
+		apiKey: {
+			alfajores: CELOSCAN_API_KEY || '',
+			polygonMumbai: POLYGONSCAN_API_KEY || ''
+		}
 	},
 	gasReporter: {
 		enabled: true,
@@ -53,7 +68,7 @@ const config: CustomHardhatConfig = {
 		}
 	},
 	solidity: {
-		version: '0.8.17',
+		version: '0.8.19',
 		settings: {
 			optimizer: {
 				enabled: true,

@@ -1,5 +1,5 @@
 {
-	"name": "meetdapp-contracts",
+	"name": "meetdapp",
 	"version": "0.1.0",
 	"private": true,
 	"license": "MIT",
@@ -17,7 +17,13 @@
 		"typechain": "yarn hardhat typechain"
 	},
 	"dependencies": {
-		"@chainlink/contracts": "^0.6.1"
+		"@chainlink/contracts": "^0.6.1",
+		"@nomicfoundation/hardhat-chai-matchers": "^2.0.2",
+		"@nomicfoundation/hardhat-ethers": "^3.0.0",
+		"@nomicfoundation/hardhat-network-helpers": "^1.0.8",
+		"@nomicfoundation/hardhat-toolbox": "^3.0.0",
+		"erc721b": "^0.2.1",
+		"hardhat-celo": "^0.0.4"
 	},
 	"devDependencies": {
 		"@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@0.3.0-beta.12",

@@ -3,7 +3,7 @@ import { DeployFunction } from 'hardhat-deploy/types'
 import { developmentChains, networkConfig } from '../helper-hardhat-config'
 import verify from '../helper-functions'
 
-const deployHelloWorld: DeployFunction = async function (
+const deployMeetdApp: DeployFunction = async function (
 	hre: HardhatRuntimeEnvironment
 ) {
 	// @ts-ignore
@@ -12,22 +12,23 @@ const deployHelloWorld: DeployFunction = async function (
 	const { deployer } = await getNamedAccounts()
 
 	log('----------------------------------------------------')
-	log('Deploying Hello World contract and waiting for confirmations...')
+	log('Deploying MeetdApp contract and waiting for confirmations...')
 
-	const HelloWorldContract = await deploy('HelloWorld', {
+	const args: any[] = []
+
+	const MeetdAppContract = await deploy('MeetdApp', {
 		from: deployer,
-		args: [],
+		args: args,
 		log: true,
 		waitConfirmations: networkConfig[network.name].blockConfirmations || 1
 	})
-
 	if (
 		!developmentChains.includes(network.name) &&
-		process.env.POLYGONSCAN_API_KEY
+		(process.env.CELOSCAN_API_KEY || process.env.POLYGONSCAN_API_KEY)
 	) {
-		await verify(HelloWorldContract.address, [])
+		await verify(MeetdAppContract.address, args)
 	}
 }
 
-export default deployHelloWorld
-deployHelloWorld.tags = ['all', 'HelloWorld']
+export default deployMeetdApp
+deployMeetdApp.tags = ['all', 'MeetdApp']

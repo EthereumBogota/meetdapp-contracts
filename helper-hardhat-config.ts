@@ -12,6 +12,9 @@ export const networkConfig: networkConfigInfo = {
 	localhost: {
 		blockConfirmations: 3
 	},
+	alfajores: {
+		blockConfirmations: 3
+	},
 	mumbai: {
 		blockConfirmations: 3
 	}
