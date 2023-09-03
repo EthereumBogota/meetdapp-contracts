@@ -2,9 +2,10 @@
 pragma solidity ^0.8.19;
 
 import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
 import './MeetdAppEventVariables.sol';
 
-contract MeetdAppEvent is MeetdAppEventVariables {
+contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 	function updateEventName(string memory _name) public onlyOwner {
 		name = _name;
 
@@ -54,10 +55,26 @@ contract MeetdAppEvent is MeetdAppEventVariables {
 		emit UpdatedEventTotalTickets(eventTotalTickets);
 	}
 
+	function updateEventNfts(address _nfts) public onlyOwner {
+		require(
+			msg.sender == eventFactory,
+			'Only the event factory can update the nfts'
+		);
+		nfts = _nfts;
+	}
+
 	function updateEventOwner(address payable _owner) public onlyOwner {
 		owner = _owner;
 
 		emit UpdatedEventOwner(eventOwner);
+	}
+
+	function updateReedemableTimeAndSecretWordHash(
+		uint256 _reedemableTime,
+		bytes32 _secretWordHash
+	) public onlyOwner {
+		reedemableTime = _reedemableTime;
+		secretWordHash = _secretWordHash;
 	}
 
 	function buyTicket() public payable {
@@ -85,5 +102,20 @@ contract MeetdAppEvent is MeetdAppEventVariables {
 		eventAttendees[_newOwner] = true;
 
 		emit TransferredTicket(msg.sender, _newOwner);
+	}
+
+	function reedemNft(string memory _secretWord) public {
+		require(eventAttendees[msg.sender] == true, 'You do not have a ticket');
+		require(
+			block.timestamp <= eventReedemableTime,
+			'You cannot reedem your NFT yet'
+		);
+		require(
+			keccak256(_secretWord) == eventSecretWordHash,
+			'Secret word is incorrect'
+		);
+		require(balanceOf(msg.sender) == 0, '');
+
+		IERC721(nfts).safeMint(msg.sender);
 	}
 }
