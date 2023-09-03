@@ -2,18 +2,8 @@
 pragma solidity ^0.8.19;
 
 import '../event/MeetdAppEvent.sol';
+import '../utils/constans.sol';
 
-enum consVarInt {
-	startDate,
-	endDate,
-	capacity
-}
-
-struct dataEvent {
-	bool active;
-	bytes32 eventId;
-	MeetdAppEvent eventAddr;
-}
 
 /// @title MeetdApp Factory
 /// @notice Create and config New Events
@@ -32,21 +22,21 @@ contract MeetdAppFactory {
 	event newEvent(string _eventId);
 
 	function CreateEvent(
-		string calldata _eventId,
-		string calldata _name,
-		string calldata _description,
-		string calldata _location,
+		string memory _eventId,
+		string memory _name,
+		string memory _description,
+		string memory _location,
 		uint256[3] memory _varInt
 	) external {
 		require(
-			_varInt[consVarInt.startDate] >= block.timestamp,
+			_varInt[uint256(consVarInt.startDate)] >= block.timestamp,
 			'Invalid start Date'
 		);
 		require(
-			_varInt[consVarInt.endDate] > _varInt[consVarInt.startDate],
+			_varInt[uint256(consVarInt.endDate)] > _varInt[uint256(consVarInt.startDate)],
 			'Invalid end Date'
 		);
-		require(_varInt[consVarInt.capacity] > 0, 'Invalid capacity');
+		require(_varInt[uint256(consVarInt.capacity)] > 0, 'Invalid capacity');
 
 		MeetdAppEvent eventNew = new MeetdAppEvent(
 			msg.sender,
@@ -62,7 +52,7 @@ contract MeetdAppFactory {
 		mapEventNum[numEvents] = dataEvent({
 			active: true,
 			eventId: _eventId,
-			eventAddr: address(eventNew)
+			eventAddr: eventNew
 		});
 
 		mapIdEvent[keccak256(abi.encodePacked(_eventId))] = MeetdAppEvent(
