@@ -36,7 +36,6 @@ contract MeetdAppFactory {
 		);
 		require(_varInt[uint256(consVarInt.capacity)] > 0, 'Invalid capacity');
 
-
 		MeetdAppNFT eventNFT = new MeetdAppNFT(
 			_varStr[uint256(consVarStr.nftName)],
 			_varStr[uint256(consVarStr.nftSymbol)],
