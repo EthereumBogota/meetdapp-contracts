@@ -24,23 +24,28 @@ contract MeetdAppEventVariables {
 
 	// event events
 
+	event BoughtTicket(address buyer);
+
+	event RefundedTicket(address buyer);
+
+	event TransferredTicket(address buyer, address newOwner);
+
 	event UpdatedEventName(string eventName);
 
 	event UpdatedEventDescription(string eventDescription);
 
 	event UpdatedEventLocation(string eventLocation);
 
+	event UpdatedEventTotalTickets(uint eventTotalTickets);
+
 	event UpdatedEventStartTime(uint256 eventStartTime);
 
 	event UpdatedEventEndTime(uint256 eventEndTime);
 
-	event UpdatedEventTotalTickets(uint eventTotalTickets);
+	event UpdatedReedemableTimeAndSecretWordHash(
+		uint256 eventReedemableTime,
+		bytes32 eventSecretWordHash
+	);
 
-	event UpdatedEventOwner(address payable eventOwner);
-
-	event BoughtTicket(address buyer);
-
-	event RefundedTicket(address buyer);
-
-	event TransferredTicket(address buyer, address newOwner);
+	event UpdatedEventOwner(address eventOwner);
 }
