@@ -2,18 +2,9 @@
 pragma solidity ^0.8.19;
 
 import '../event/MeetdAppEvent.sol';
+import '../utils/constans.sol';
+import '../NFT/MeetdAppNFT.sol';
 
-enum consVarInt {
-	startDate,
-	endDate,
-	capacity
-}
-
-struct dataEvent {
-	bool active;
-	bytes32 eventId;
-	MeetdAppEvent eventAddr;
-}
 
 /// @title MeetdApp Factory
 /// @notice Create and config New Events
@@ -29,46 +20,53 @@ contract MeetdAppFactory {
 	/// @notice Mapping to store all the created houses numEvent -> dataEvent
 	mapping(uint256 => dataEvent) public mapEventNum;
 
-	event newEvent(string _eventId);
+	event newEvent(string eventId);
 
 	function CreateEvent(
-		string calldata _eventId,
-		string calldata _name,
-		string calldata _description,
-		string calldata _location,
-		uint256[3] memory _varInt
+		string[] memory _varStr,
+		uint256[] memory _varInt
 	) external {
 		require(
-			_varInt[consVarInt.startDate] >= block.timestamp,
+			_varInt[uint256(consVarInt.startDate)] >= block.timestamp,
 			'Invalid start Date'
 		);
 		require(
-			_varInt[consVarInt.endDate] > _varInt[consVarInt.startDate],
+			_varInt[uint256(consVarInt.endDate)] > _varInt[uint256(consVarInt.startDate)],
 			'Invalid end Date'
 		);
-		require(_varInt[consVarInt.capacity] > 0, 'Invalid capacity');
+		require(_varInt[uint256(consVarInt.capacity)] > 0, 'Invalid capacity');
+
+
+		MeetdAppNFT eventNFT = new MeetdAppNFT(
+			_varStr[uint256(consVarStr.nftName)],
+			_varStr[uint256(consVarStr.nftSymbol)],
+			_varStr[uint256(consVarStr.nftUri)]
+		);
+		
+		address[] memory varAdr = new address[] (2);
+		varAdr[uint256(consVarAdr.owner)] = msg.sender;
+		varAdr[uint256(consVarAdr.nfts)] = address(eventNFT);
 
 		MeetdAppEvent eventNew = new MeetdAppEvent(
-			msg.sender,
-			_eventId,
-			_name,
-			_description,
-			_location,
+			varAdr,
+			_varStr,
 			_varInt
 		);
+
+		eventNFT.transferOwnership(address(eventNew));
 
 		numEvents++;
 
 		mapEventNum[numEvents] = dataEvent({
 			active: true,
-			eventId: _eventId,
-			eventAddr: address(eventNew)
+			eventId: _varStr[uint256(consVarStr.eventId)],
+			eventAddr: eventNew
 		});
 
-		mapIdEvent[keccak256(abi.encodePacked(_eventId))] = MeetdAppEvent(
-			address(eventNew)
-		);
+		bytes32 hashEventId = keccak256(abi.encodePacked(_varStr[uint256(consVarStr.eventId)]));
 
-		emit newEvent(_eventId);
+		mapIdEvent[hashEventId] = MeetdAppEvent(address(eventNew));
+
+		emit newEvent(_varStr[uint256(consVarStr.eventId)]);
 	}
 }
