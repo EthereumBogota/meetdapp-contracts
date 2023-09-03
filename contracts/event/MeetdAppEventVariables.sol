@@ -24,12 +24,6 @@ contract MeetdAppEventVariables {
 
 	// event events
 
-	event BoughtTicket(address buyer);
-
-	event RefundedTicket(address buyer);
-
-	event TransferredTicket(address buyer, address newOwner);
-
 	event UpdatedEventName(string eventName);
 
 	event UpdatedEventDescription(string eventDescription);

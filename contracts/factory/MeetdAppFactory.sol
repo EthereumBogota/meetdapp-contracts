@@ -20,7 +20,7 @@ contract MeetdAppFactory {
 	/// @notice Mapping to store all the created houses numEvent -> dataEvent
 	mapping(uint256 => dataEvent) public mapEventNum;
 
-	event newEvent(string eventId);
+	event createdEvent(string eventId);
 
 	function CreateEvent(
 		string[] memory _varStr,
@@ -66,6 +66,6 @@ contract MeetdAppFactory {
 
 		mapIdEvent[hashEventId] = MeetdAppEvent(address(eventNew));
 
-		emit newEvent(_varStr[uint256(consVarStr.eventId)]);
+		emit createdEvent(_varStr[uint256(consVarStr.eventId)]);
 	}
 }

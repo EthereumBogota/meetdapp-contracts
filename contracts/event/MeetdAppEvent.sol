@@ -4,6 +4,7 @@ pragma solidity ^0.8.19;
 import '@openzeppelin/contracts/access/Ownable.sol';
 import './MeetdAppEventVariables.sol';
 import '../utils/constans.sol';
+import '../interfaces/IMeetdAppNFT.sol';
 
 contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 
@@ -23,33 +24,6 @@ contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 		eventStartTime = _varInt[uint256(consVarInt.startDate)];
 		eventEndTime = _varInt[uint256(consVarInt.endDate)];
 		eventTotalTickets = eventRemainingTickets = _varInt[uint256(consVarInt.capacity)];
-	}
-
-	function buyTicket() public payable {
-		require(eventAttendees[msg.sender] == false, 'You already have a ticket');
-
-		eventAttendees[msg.sender] = true;
-		eventRemainingTickets -= 1;
-
-		emit BoughtTicket(msg.sender);
-	}
-
-	function refundTicket() public payable {
-		require(eventAttendees[msg.sender] == true, 'You do not have a ticket');
-
-		eventAttendees[msg.sender] = false;
-		eventRemainingTickets += 1;
-
-		emit RefundedTicket(msg.sender);
-	}
-
-	function transferTicket(address _newOwner) public {
-		require(eventAttendees[msg.sender] == true, 'You do not have a ticket');
-
-		eventAttendees[msg.sender] = false;
-		eventAttendees[_newOwner] = true;
-
-		emit TransferredTicket(msg.sender, _newOwner);
 	}
 
 	function reedemNft(string calldata _eventSecretWord) public {
@@ -90,17 +64,6 @@ contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 		eventLocation = _eventLocation;
 
 		emit UpdatedEventLocation(eventLocation);
-	}
-
-	function updateEventTotalTickets(uint _eventTotalTickets) public onlyOwner {
-		require(
-			_eventTotalTickets >= eventRemainingTickets,
-			'Total tickets must be greater than or equal to remaining tickets'
-		);
-
-		eventTotalTickets = _eventTotalTickets;
-
-		emit UpdatedEventTotalTickets(eventTotalTickets);
 	}
 
 	function updateEventStartTime(uint256 _eventStartTime) public onlyOwner {
