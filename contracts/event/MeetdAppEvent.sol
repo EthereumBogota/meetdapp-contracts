@@ -4,17 +4,24 @@ pragma solidity ^0.8.19;
 import '@openzeppelin/contracts/access/Ownable.sol';
 import './MeetdAppEventVariables.sol';
 
-contract MeetdAppEventFunctions is MeetdAppEventVariables {
+contract MeetdAppEvent is MeetdAppEventVariables {
 	function updateEventName(string memory _name) public onlyOwner {
 		name = _name;
+
+		emit UpdatedEventName(eventName);
+		(_name);
 	}
 
 	function updateEventDescription(string memory _description) public onlyOwner {
 		description = _description;
+
+		emit UpdatedEventDescription(eventDescription);
 	}
 
 	function updateEventLocation(string memory _location) public onlyOwner {
 		location = _location;
+
+		emit UpdatedEventLocation(eventLocation);
 	}
 
 	function updateEventStartTime(uint256 _startTime) public onlyOwner {
@@ -22,12 +29,18 @@ contract MeetdAppEventFunctions is MeetdAppEventVariables {
 			_startTime > startTime,
 			'Start time must be greater than start time'
 		);
+
 		startTime = _startTime;
+
+		emit UpdatedEventStartTime(eventStartTime);
 	}
 
 	function updateEventEndTime(uint256 _endTime) public onlyOwner {
 		require(_endTime > startTime, 'End time must be greater than start time');
+
 		endTime = _endTime;
+
+		emit UpdatedEventEndTime(eventEndTime);
 	}
 
 	function updateEventTotalTickets(uint _totalTickets) public onlyOwner {
@@ -35,11 +48,16 @@ contract MeetdAppEventFunctions is MeetdAppEventVariables {
 			_totalTickets >= remainingTickets,
 			'Total tickets must be greater than or equal to remaining tickets'
 		);
+
 		totalTickets = _totalTickets;
+
+		emit UpdatedEventTotalTickets(eventTotalTickets);
 	}
 
 	function updateEventOwner(address payable _owner) public onlyOwner {
 		owner = _owner;
+
+		emit UpdatedEventOwner(eventOwner);
 	}
 
 	function buyTicket() public payable {
@@ -47,6 +65,8 @@ contract MeetdAppEventFunctions is MeetdAppEventVariables {
 
 		eventAttendees[msg.sender] = true;
 		remainingTickets -= 1;
+
+		emit BoughtTicket(msg.sender);
 	}
 
 	function refundTicket(uint _id) public payable {
@@ -54,6 +74,8 @@ contract MeetdAppEventFunctions is MeetdAppEventVariables {
 
 		eventAttendees[msg.sender] = false;
 		remainingTickets += 1;
+
+		emit RefundedTicket(msg.sender);
 	}
 
 	function transferTicket(address _newOwner) public {
@@ -61,5 +83,7 @@ contract MeetdAppEventFunctions is MeetdAppEventVariables {
 
 		eventAttendees[msg.sender] = false;
 		eventAttendees[_newOwner] = true;
+
+		emit TransferredTicket(msg.sender, _newOwner);
 	}
 }
