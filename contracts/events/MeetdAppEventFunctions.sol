@@ -17,10 +17,6 @@ contract MeetdAppEventFunctions is MeetdAppEventVariables {
 		location = _location;
 	}
 
-	function updateEventDate(uint _date) public onlyOwner {
-		date = _date;
-	}
-
 	function updateEventStartTime(uint256 _startTime) public onlyOwner {
 		require(
 			_startTime > startTime,
