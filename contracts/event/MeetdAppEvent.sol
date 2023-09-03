@@ -3,8 +3,28 @@ pragma solidity ^0.8.19;
 
 import '@openzeppelin/contracts/access/Ownable.sol';
 import './MeetdAppEventVariables.sol';
+import '../utils/constans.sol';
 
 contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
+
+	constructor(
+		address _owner,
+		string memory _eventId,
+		string memory _name,
+		string memory _description,
+		string memory _location,
+		uint256[3] memory _varInt
+	) {
+		eventOwner = _owner;
+		eventId = _eventId;
+		eventName = _name;
+		eventDescription = _description;
+		eventLocation = _location;
+		eventStartTime = _varInt[uint256(consVarInt.startDate)];
+		eventEndTime = _varInt[uint256(consVarInt.endDate)];
+		eventTotalTickets = eventRemainingTickets = _varInt[uint256(consVarInt.capacity)];
+	}
+
 	function updateEventName(string memory _eventName) public onlyOwner {
 		eventName = _eventName;
 
@@ -59,13 +79,13 @@ contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 		emit UpdatedEventTotalTickets(eventTotalTickets);
 	}
 
-	function updateEventOwner(address payable _eventOwner) public onlyOwner {
+	function updateEventOwner(address _eventOwner) public onlyOwner {
 		eventOwner = _eventOwner;
 
 		emit UpdatedEventOwner(eventOwner);
 	}
 
-	function buyTicket() public payable {
+	function buyTicket() public {
 		require(eventAttendees[msg.sender] == false, 'You already have a ticket');
 
 		eventAttendees[msg.sender] = true;
@@ -74,7 +94,7 @@ contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 		emit BoughtTicket(msg.sender);
 	}
 
-	function refundTicket(uint _id) public payable {
+	function refundTicket() public {
 		require(eventAttendees[msg.sender] == true, 'You do not have a ticket');
 
 		eventAttendees[msg.sender] = false;
