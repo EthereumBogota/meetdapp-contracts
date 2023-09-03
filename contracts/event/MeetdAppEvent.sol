@@ -3,9 +3,28 @@ pragma solidity ^0.8.19;
 
 import '@openzeppelin/contracts/access/Ownable.sol';
 import './MeetdAppEventVariables.sol';
+import '../utils/constans.sol';
 import '../interfaces/IMeetdAppNFT.sol';
 
 contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
+	constructor(
+		address _owner,
+		string memory _eventId,
+		string memory _name,
+		string memory _description,
+		string memory _location,
+		uint256[3] memory _varInt
+	) {
+		eventOwner = _owner;
+		eventId = _eventId;
+		eventName = _name;
+		eventDescription = _description;
+		eventLocation = _location;
+		eventStartTime = _varInt[uint256(consVarInt.startDate)];
+		eventEndTime = _varInt[uint256(consVarInt.endDate)];
+		eventTotalTickets = eventRemainingTickets = _varInt[uint256(consVarInt.capacity)];
+	}
+
 	function buyTicket() public payable {
 		require(eventAttendees[msg.sender] == false, 'You already have a ticket');
 
@@ -50,6 +69,7 @@ contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 
 		IMeetdAppNFT(eventNfts).safeMint(msg.sender);
 	}
+
 
 	function updateEventName(string memory _eventName) public onlyOwner {
 		eventName = _eventName;
@@ -105,9 +125,47 @@ contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 		emit UpdatedEventEndTime(eventEndTime);
 	}
 
-	function updateEventOwner(address payable _eventOwner) public onlyOwner {
+	function updateEventTotalTickets(uint _eventTotalTickets) public onlyOwner {
+		require(
+			_eventTotalTickets >= eventRemainingTickets,
+			'Total tickets must be greater than or equal to remaining tickets'
+		);
+
+		eventTotalTickets = _eventTotalTickets;
+
+		emit UpdatedEventTotalTickets(eventTotalTickets);
+	}
+
+	function updateEventOwner(address _eventOwner) public onlyOwner {
 		eventOwner = _eventOwner;
 
 		emit UpdatedEventOwner(eventOwner);
+	}
+
+	function buyTicket() public {
+		require(eventAttendees[msg.sender] == false, 'You already have a ticket');
+
+		eventAttendees[msg.sender] = true;
+		eventRemainingTickets -= 1;
+
+		emit BoughtTicket(msg.sender);
+	}
+
+	function refundTicket() public {
+		require(eventAttendees[msg.sender] == true, 'You do not have a ticket');
+
+		eventAttendees[msg.sender] = false;
+		eventRemainingTickets += 1;
+
+		emit RefundedTicket(msg.sender);
+	}
+
+	function transferTicket(address _newOwner) public {
+		require(eventAttendees[msg.sender] == true, 'You do not have a ticket');
+
+		eventAttendees[msg.sender] = false;
+		eventAttendees[_newOwner] = true;
+
+		emit TransferredTicket(msg.sender, _newOwner);
 	}
 }

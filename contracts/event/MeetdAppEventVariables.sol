@@ -48,4 +48,10 @@ contract MeetdAppEventVariables {
 	);
 
 	event UpdatedEventOwner(address eventOwner);
+
+	event BoughtTicket(address buyer);
+
+	event RefundedTicket(address buyer);
+
+	event TransferredTicket(address buyer, address newOwner);
 }
