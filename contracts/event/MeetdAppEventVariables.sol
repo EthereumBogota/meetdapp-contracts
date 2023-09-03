@@ -12,7 +12,7 @@ contract MeetdAppEventVariables {
 	uint256 eventEndTime;
 	uint eventTotalTickets;
 	uint eventRemainingTickets;
-	address payable eventOwner;
+	address eventOwner;
 
 	// event mappings
 
@@ -32,7 +32,7 @@ contract MeetdAppEventVariables {
 
 	event UpdatedEventTotalTickets(uint eventTotalTickets);
 
-	event UpdatedEventOwner(address payable eventOwner);
+	event UpdatedEventOwner(address eventOwner);
 
 	event BoughtTicket(address buyer);
 
