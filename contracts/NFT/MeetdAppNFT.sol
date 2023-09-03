@@ -33,4 +33,35 @@ contract MeetdAppNFT is ERC721, Ownable {
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
     }
+
+    function approve(
+        address,
+        uint256
+    ) public override pure {
+        revert( "Approve isn't allowed" );
+    }
+
+    function setApprovalForAll(
+        address,
+        bool
+    ) public override pure {
+        revert( "setApprovalForAll isn't allowed" );
+    }
+
+    function transferFrom(
+        address,
+        address,
+        uint256
+    ) public override pure {
+        revert( "transferFrom isn't allowed" );
+    }
+
+    function safeTransferFrom(
+        address,
+        address,
+        uint256,
+        bytes calldata
+    ) public override pure {
+        revert( "safeTransferFrom isn't allowed" );
+    }
 }
