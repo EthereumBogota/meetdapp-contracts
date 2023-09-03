@@ -4,22 +4,22 @@ pragma solidity ^0.8.19;
 import '@openzeppelin/contracts/access/Ownable.sol';
 import './MeetdAppEventVariables.sol';
 import '../utils/constans.sol';
-import '../interfaces/IMeetdAppNFT.sol';
 
 contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
+
 	constructor(
-		address _owner,
-		string memory _eventId,
-		string memory _name,
-		string memory _description,
-		string memory _location,
-		uint256[3] memory _varInt
+		address[] memory _varAdr,
+		string[] memory _varStr,
+		uint256[] memory _varInt
 	) {
-		eventOwner = _owner;
-		eventId = _eventId;
-		eventName = _name;
-		eventDescription = _description;
-		eventLocation = _location;
+		eventOwner = _varAdr[uint256(consVarAdr.owner)];
+		// eventNfts = _varAdr[uint256(consVarAdr.nfts)];
+
+		eventId = _varStr[uint256(consVarStr.eventId)];
+		eventName = _varStr[uint256(consVarStr.eventName)];
+		eventDescription = _varStr[uint256(consVarStr.eventDescription)];
+		eventLocation = _varStr[uint256(consVarStr.eventLocation)];
+
 		eventStartTime = _varInt[uint256(consVarInt.startDate)];
 		eventEndTime = _varInt[uint256(consVarInt.endDate)];
 		eventTotalTickets = eventRemainingTickets = _varInt[uint256(consVarInt.capacity)];

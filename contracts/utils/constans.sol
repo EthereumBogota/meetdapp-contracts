@@ -8,6 +8,21 @@ enum consVarInt {
 	capacity
 }
 
+enum consVarStr {
+	eventId,
+	eventName,
+	eventDescription,
+	eventLocation,
+	nftName,
+	nftSymbol,
+	nftUri
+}
+
+enum consVarAdr {
+	owner,
+	nfts
+}
+
 struct dataEvent {
 	bool active;
 	string eventId;
