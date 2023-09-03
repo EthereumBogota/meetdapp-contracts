@@ -14,7 +14,7 @@ contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 		uint256[] memory _varInt
 	) {
 		eventOwner = _varAdr[uint256(consVarAdr.owner)];
-		// eventNfts = _varAdr[uint256(consVarAdr.nfts)];
+		eventNfts = _varAdr[uint256(consVarAdr.nfts)];
 
 		eventId = _varStr[uint256(consVarStr.eventId)];
 		eventName = _varStr[uint256(consVarStr.eventName)];
