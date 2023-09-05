@@ -7,7 +7,6 @@ import '../utils/constans.sol';
 import '../interfaces/IMeetdAppNFT.sol';
 
 contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
-
 	constructor(
 		address[] memory _varAdr,
 		string[] memory _varStr,
@@ -23,7 +22,9 @@ contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 
 		eventStartTime = _varInt[uint256(consVarInt.startDate)];
 		eventEndTime = _varInt[uint256(consVarInt.endDate)];
-		eventTotalTickets = eventRemainingTickets = _varInt[uint256(consVarInt.capacity)];
+		eventTotalTickets = eventRemainingTickets = _varInt[
+			uint256(consVarInt.capacity)
+		];
 	}
 
 	function reedemNft(string calldata _eventSecretWord) public {
@@ -33,7 +34,7 @@ contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 			'You cannot reedem your NFT yet'
 		);
 		require(
-			keccak256(abi.encode(_eventSecretWord)) == eventSecretWordHash,
+			keccak256(abi.encodePacked(_eventSecretWord)) == eventSecretWordHash,
 			'Secret word is incorrect'
 		);
 		require(
@@ -43,7 +44,6 @@ contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 
 		IMeetdAppNFT(eventNfts).safeMint(msg.sender);
 	}
-
 
 	function updateEventName(string memory _eventName) public onlyOwner {
 		eventName = _eventName;
