@@ -3,7 +3,7 @@ import { DeployFunction } from 'hardhat-deploy/types'
 import { developmentChains, networkConfig } from '../helper-hardhat-config'
 import verify from '../helper-functions'
 
-const deployMeetdApp: DeployFunction = async function (
+const deployMeetdAppFactory: DeployFunction = async function (
 	hre: HardhatRuntimeEnvironment
 ) {
 	// @ts-ignore
@@ -12,11 +12,11 @@ const deployMeetdApp: DeployFunction = async function (
 	const { deployer } = await getNamedAccounts()
 
 	log('----------------------------------------------------')
-	log('Deploying MeetdApp contract and waiting for confirmations...')
+	log('Deploying MeetdAppFactory contract and waiting for confirmations...')
 
 	const args: any[] = []
 
-	const MeetdAppContract = await deploy('MeetdApp', {
+	const MeetdAppContract = await deploy('MeetdAppFactory', {
 		from: deployer,
 		args: args,
 		log: true,
@@ -30,5 +30,5 @@ const deployMeetdApp: DeployFunction = async function (
 	}
 }
 
-export default deployMeetdApp
-deployMeetdApp.tags = ['all', 'MeetdApp']
+export default deployMeetdAppFactory
+deployMeetdAppFactory.tags = ['all', 'MeetdAppFactory']
