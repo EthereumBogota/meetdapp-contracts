@@ -66,6 +66,10 @@ contract MeetdAppFactory {
 
 		mapIdEvent[hashEventId] = MeetdAppEvent(address(eventNew));
 
-		emit createdEvent(_varStr[uint256(consVarStr.eventId)]);
+		emit createdEvent(
+			numEvents,
+			_varStr[uint256(consVarStr.eventId)],
+			hashEventId
+		);
 	}
 }
