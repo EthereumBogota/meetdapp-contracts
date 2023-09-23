@@ -25,6 +25,8 @@ enum consVarAdr {
 
 struct dataEvent {
 	bool active;
+	uint256 eventNum;
 	string eventId;
 	MeetdAppEvent eventAddr;
+	bytes32 hashId;
 }

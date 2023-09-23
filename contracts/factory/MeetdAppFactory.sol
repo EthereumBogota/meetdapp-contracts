@@ -14,17 +14,14 @@ contract MeetdAppFactory {
 	/// @notice Store the number of created events
 	uint256 public numEvents;
 
-/// @notice Mapping to store all the created houses numEvents -> dataEvent
+	/// @notice Mapping to store all the created houses numEvents -> dataEvent
 	mapping(uint256 => dataEvent) public mapNumEvent;
 	
 	/// @notice Relation between eventId (hash nanoId) and dataEvent
 	mapping(bytes32 => dataEvent) public mapIdEvent;
 
-	/// @notice Relation between eventId (hash nanoId) and numEvents
-	mapping(bytes32 => uint256) public mapIdEventNum;
-
-	/// @notice Relation between event Address and numEvents
-	mapping(address => uint256) public mapAddrEventNum;
+	/// @notice Relation between event Address and dataEvent
+	mapping(address => dataEvent) public mapAddrEventNum;
 
 
 	event createdEvent(
@@ -77,8 +74,8 @@ contract MeetdAppFactory {
 			hashId: hashEventId
 		});
 
-
-		mapIdEvent[hashEventId] = MeetdAppEvent(address(eventNew));
+		mapIdEvent[hashEventId] = mapNumEvent[numEvents];
+		mapAddrEventNum[address(eventNew)] = mapNumEvent[numEvents];
 
 		emit createdEvent(
 			numEvents,
