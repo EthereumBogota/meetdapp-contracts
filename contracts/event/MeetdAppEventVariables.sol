@@ -2,7 +2,7 @@
 pragma solidity ^0.8.19;
 
 contract MeetdAppEventVariables {
-	// event variables
+	/* Variables */
 
 	string public eventId;
 	string public eventName;
@@ -18,11 +18,13 @@ contract MeetdAppEventVariables {
 	address public eventOwner;
 	address public eventNfts;
 
-	// event mappings
+	/* Storage */
+
+	address[] public attendeesList;
 
 	mapping(address => bool) public eventAttendees;
 
-	// event events
+	/* Events */
 
 	event UpdatedEventName(string eventName);
 

@@ -5,7 +5,6 @@ import '../event/MeetdAppEvent.sol';
 import '../utils/constans.sol';
 import '../NFT/MeetdAppNFT.sol';
 
-
 /// @title MeetdApp Factory
 /// @notice Create and config New Events
 /// @dev This contract is the standard way to create a new event
@@ -22,6 +21,10 @@ contract MeetdAppFactory {
 
 	event createdEvent(string eventId);
 
+	// ************************ //
+	// *    Write functions   * //
+	// ************************ //
+
 	function CreateEvent(
 		string[] memory _varStr,
 		uint256[] memory _varInt
@@ -31,7 +34,8 @@ contract MeetdAppFactory {
 			'Invalid start Date'
 		);
 		require(
-			_varInt[uint256(consVarInt.endDate)] > _varInt[uint256(consVarInt.startDate)],
+			_varInt[uint256(consVarInt.endDate)] >
+				_varInt[uint256(consVarInt.startDate)],
 			'Invalid end Date'
 		);
 		require(_varInt[uint256(consVarInt.capacity)] > 0, 'Invalid capacity');
@@ -41,16 +45,12 @@ contract MeetdAppFactory {
 			_varStr[uint256(consVarStr.nftSymbol)],
 			_varStr[uint256(consVarStr.nftUri)]
 		);
-		
-		address[] memory varAdr = new address[] (2);
+
+		address[] memory varAdr = new address[](2);
 		varAdr[uint256(consVarAdr.owner)] = msg.sender;
 		varAdr[uint256(consVarAdr.nfts)] = address(eventNFT);
 
-		MeetdAppEvent eventNew = new MeetdAppEvent(
-			varAdr,
-			_varStr,
-			_varInt
-		);
+		MeetdAppEvent eventNew = new MeetdAppEvent(varAdr, _varStr, _varInt);
 
 		eventNFT.transferOwnership(address(eventNew));
 
@@ -62,10 +62,16 @@ contract MeetdAppFactory {
 			eventAddr: eventNew
 		});
 
-		bytes32 hashEventId = keccak256(abi.encodePacked(_varStr[uint256(consVarStr.eventId)]));
+		bytes32 hashEventId = keccak256(
+			abi.encodePacked(_varStr[uint256(consVarStr.eventId)])
+		);
 
 		mapIdEvent[hashEventId] = MeetdAppEvent(address(eventNew));
 
 		emit createdEvent(_varStr[uint256(consVarStr.eventId)]);
 	}
+
+	// ************************ //
+	// *    Read functions    * //
+	// ************************ //
 }

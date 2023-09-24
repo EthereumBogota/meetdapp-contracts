@@ -27,6 +27,10 @@ contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 		];
 	}
 
+	// ************************ //
+	// *    Write functions   * //
+	// ************************ //
+
 	function reedemNft(string calldata _eventSecretWord) public {
 		require(eventAttendees[msg.sender] == true, 'You do not have a ticket');
 		require(
@@ -43,6 +47,49 @@ contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 		);
 
 		IMeetdAppNFT(eventNfts).safeMint(msg.sender);
+	}
+
+	function buyTicket() public {
+		require(eventAttendees[msg.sender] == false, 'You already have a ticket');
+
+		eventAttendees[msg.sender] = true;
+		attendeesList.push(msg.sender);
+		eventRemainingTickets -= 1;
+
+		emit BoughtTicket(msg.sender);
+	}
+
+	function transferTicket(address _newOwner) public {
+		require(eventAttendees[msg.sender] == true, 'You do not have a ticket');
+
+		eventAttendees[msg.sender] = false;
+		eventAttendees[_newOwner] = true;
+
+		for (uint i = 0; i < attendeesList.length; i++) {
+			if (attendeesList[i] == msg.sender) {
+				attendeesList[i] = _newOwner;
+				break;
+			}
+		}
+
+		emit TransferredTicket(msg.sender, _newOwner);
+	}
+
+	function refundTicket() public {
+		require(eventAttendees[msg.sender] == true, 'You do not have a ticket');
+
+		eventAttendees[msg.sender] = false;
+		eventRemainingTickets += 1;
+
+		for (uint i = 0; i < attendeesList.length; i++) {
+			if (attendeesList[i] == msg.sender) {
+				attendeesList[i] = attendeesList[attendeesList.length - 1];
+				attendeesList.pop();
+				break;
+			}
+		}
+
+		emit RefundedTicket(msg.sender);
 	}
 
 	function updateEventName(string memory _eventName) public onlyOwner {
@@ -64,6 +111,17 @@ contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 		eventLocation = _eventLocation;
 
 		emit UpdatedEventLocation(eventLocation);
+	}
+
+	function updateEventTotalTickets(uint _eventTotalTickets) public onlyOwner {
+		require(
+			_eventTotalTickets >= eventRemainingTickets,
+			'Total tickets must be greater than or equal to remaining tickets'
+		);
+
+		eventTotalTickets = _eventTotalTickets;
+
+		emit UpdatedEventTotalTickets(eventTotalTickets);
 	}
 
 	function updateEventStartTime(uint256 _eventStartTime) public onlyOwner {
@@ -88,47 +146,17 @@ contract MeetdAppEvent is MeetdAppEventVariables, Ownable {
 		emit UpdatedEventEndTime(eventEndTime);
 	}
 
-	function updateEventTotalTickets(uint _eventTotalTickets) public onlyOwner {
-		require(
-			_eventTotalTickets >= eventRemainingTickets,
-			'Total tickets must be greater than or equal to remaining tickets'
-		);
-
-		eventTotalTickets = _eventTotalTickets;
-
-		emit UpdatedEventTotalTickets(eventTotalTickets);
-	}
-
 	function updateEventOwner(address _eventOwner) public onlyOwner {
 		eventOwner = _eventOwner;
 
 		emit UpdatedEventOwner(eventOwner);
 	}
 
-	function buyTicket() public {
-		require(eventAttendees[msg.sender] == false, 'You already have a ticket');
+	// ************************ //
+	// *    Read functions    * //
+	// ************************ //
 
-		eventAttendees[msg.sender] = true;
-		eventRemainingTickets -= 1;
-
-		emit BoughtTicket(msg.sender);
-	}
-
-	function refundTicket() public {
-		require(eventAttendees[msg.sender] == true, 'You do not have a ticket');
-
-		eventAttendees[msg.sender] = false;
-		eventRemainingTickets += 1;
-
-		emit RefundedTicket(msg.sender);
-	}
-
-	function transferTicket(address _newOwner) public {
-		require(eventAttendees[msg.sender] == true, 'You do not have a ticket');
-
-		eventAttendees[msg.sender] = false;
-		eventAttendees[_newOwner] = true;
-
-		emit TransferredTicket(msg.sender, _newOwner);
+	function getAllAttendees() public view returns (address[] memory) {
+		return attendeesList;
 	}
 }
